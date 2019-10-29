@@ -1,0 +1,38 @@
+# OPLS-UA linear alkane model:
+define		N        as 8
+define		length   as 1.5260
+define		angle    as 112.40
+define		dihedral as 180
+
+atom_type	CH3	lj/cut 0.1750 3.9050
+atom_type	CH2	lj/cut 0.1180 3.9050
+
+mass		CH3	15.0350
+mass		CH2	14.0270
+diameter	CH?     3.9050
+
+bond_type	CH? CH?		harmonic 260.0 $length
+angle_type	CH? CH? CH? 	harmonic 63.00 $angle
+
+dihedral_type	CH? CH? CH? CH? 	charmm { 1.411/2} 1   0 0
+dihedral_type	CH? CH? CH? CH? 	charmm {-0.271/2} 2 180 0
+dihedral_type	CH? CH? CH? CH? 	charmm { 3.145/2} 3   0 0
+
+atom		C1    CH3
+for i from 2 to {$N-1}
+  atom		C$i   CH2
+next
+atom		C$N  CH3
+
+for i from 1 to {$N-1}
+   bond		C$i C{$i+1}
+next
+
+build
+$N
+C1
+C2 C1 $length
+C3 C2 $length C1 $angle
+for i from 4 to $N
+  C$i C{$i-1} $length C{$i-2} $angle C{$i-3} $dihedral
+next

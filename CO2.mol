@@ -1,0 +1,9 @@
+# Higashi CO2 model:
+
+define kB as 0.0019872041
+
+atom_type   CO2   lj/cut {236.1*$kB} 3.72
+mass        CO2   44.010
+diameter    CO2   3.72
+atom        CO2   CO2
+

@@ -1,0 +1,25 @@
+define  	component1 as CO2
+define  	component2 as C8
+
+define  	temperature as 290.0 # K
+define  	pressure    as 36.73 # bar
+define		density     as 0.81391 # g/cm³
+define		n1          as 617
+define		n2          as 383
+
+include		$component1.mol
+include		$component2.mol
+
+box		density {0.602214*$density}
+
+packmol		seed 5634 retry 0.95 pack 1 $n1 pack 2 $n2 action execute
+
+define		name as ${component1}_${component2}
+write		openmm $name.xml elements no lj14 0.0 coul14 0.0
+write		pdb ${name}_raw.pdb elements no
+shell		python equilibrate.py -file $name -temp $temperature -press $pressure -steps 500000 -platform CUDA
+include		box.temp
+write		pdb ${name}.pdb
+shell		rm ${name}_raw.pdb box.temp
+
+write		summary
